@@ -19,6 +19,9 @@ import { GameObject } from './entitys/GameObject';
 import { Time } from './unityTypes/Time';
 import { JsonUtility } from './unityTypes/JsonUtility';
 import { float } from './utils/extends';
+import { noCallable, noTranslit } from './utils/ConvertTypes';
 
 export {ConvertTypes, float, GameObject, Time, Input,JsonUtility, Screen, ScreenOrientation, Random, SystemLanguage, Application, PlayerPrefs, MonoBehaviour,
-    BaseEntity, BaseSystem, Resources, TextAsset, EventBus, Ads, JsonHelper};
+    BaseEntity, BaseSystem, Resources, TextAsset, EventBus, Ads, JsonHelper,
+
+    noTranslit, noCallable};
