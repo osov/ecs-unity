@@ -55,13 +55,17 @@ export class MonoBehaviour extends Object3D {
 	// получить компонент или считать только свойства
 	GetComponent<T>(name: string = '') {
 		// для хранения данных
-		if (this.gameObject.userData[name] !== undefined)
-			return this.gameObject.userData[name] as T;
+		if (name != '') {
+			if (this.gameObject.userData[name] !== undefined)
+				return this.gameObject.userData[name] as T;
+			else
+				return null;
+		}
 		// для интерфейсов типа SpriteRenderer и т.п.
 		return this.gameObject as unknown as T;
 	}
 
-	SetActive(val:boolean){
+	SetActive(val: boolean) {
 		this.gameObject.visible = val;
 	}
 
