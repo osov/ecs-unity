@@ -112,7 +112,7 @@ export class BaseEntity extends MonoBehaviour {
 
 	setRenderOrder(index: number) {
 		this.renderIndex = index;
-		var z = index * 0.01 + 0.2;
+		var z = index * 0.01;
 		if (this.parent !== null) {
 			var lp = new Vector3();
 			var wp = new Vector3(0, 0, z);
