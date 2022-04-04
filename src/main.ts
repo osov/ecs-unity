@@ -4,8 +4,6 @@ import {BaseSystem} from './systems/BaseSystem';
 import { EventBus } from './systems/EventBus';
 import  { Input } from './unityTypes/Input';
 
-import * as ConvertTypes from './utils/ConvertTypes';
-
 import { Random } from './unityTypes/Random';
 import { Screen } from './unityTypes/Screen';
 import { ScreenOrientation } from './unityTypes/ScreenOrientation';
@@ -19,9 +17,9 @@ import { GameObject } from './entitys/GameObject';
 import { Time } from './unityTypes/Time';
 import { JsonUtility } from './unityTypes/JsonUtility';
 import { float } from './utils/extends';
-import { noCallable, noTranslit } from './utils/ConvertTypes';
+import { noCallable, noTranslit, noTranslitClass } from './utils/ConvertTypes';
 
-export {ConvertTypes, float, GameObject, Time, Input,JsonUtility, Screen, ScreenOrientation, Random, SystemLanguage, Application, PlayerPrefs, MonoBehaviour,
+export {float, GameObject, Time, Input,JsonUtility, Screen, ScreenOrientation, Random, SystemLanguage, Application, PlayerPrefs, MonoBehaviour,
     BaseEntity, BaseSystem, Resources, TextAsset, EventBus, Ads, JsonHelper,
 
-    noTranslit, noCallable};
+    noTranslit, noCallable, noTranslitClass};
