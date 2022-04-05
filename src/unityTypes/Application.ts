@@ -9,4 +9,8 @@ export class Application{
         return _SystemLanguage.Russian;
     }
 
+    public static OpenURL(url:string){
+        open(url);
+    }
+
 }
