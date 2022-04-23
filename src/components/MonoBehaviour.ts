@@ -69,4 +69,8 @@ export class MonoBehaviour extends Object3D {
 		this.gameObject.visible = val;
 	}
 
+	// предполагается что в наследуемых компонентах этот код есть, удобно при написании своих компонентов
+	doUpdate(deltaTime: number) {
+	}
+
 }

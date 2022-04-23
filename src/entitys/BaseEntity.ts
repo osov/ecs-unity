@@ -7,7 +7,8 @@ export class BaseEntity extends MonoBehaviour {
 	public prefabName: string; // имя образца
 	protected velocity: Vector2 = new Vector2();
 	public idEntity: number = -1;
-	protected components: MonoBehaviour[] = [];
+	public addTime: number = -1;
+	protected components: { [k: string]: MonoBehaviour } = {};
 	protected renderIndex = 0;
 
 	constructor() {
@@ -25,8 +26,17 @@ export class BaseEntity extends MonoBehaviour {
 		return super.removeFromParent();
 	}
 
+	// сброс состояния 
+	protected doReset() {
+		this.idEntity = -1;
+		this.position.set(0, 0, 0);
+		this.velocity.set(0, 0);
+		this.components = {};
+	}
+
 	// До добавления к родителю
 	onBeforeAdd() {
+		this.addTime = Date.now();
 	}
 
 	// после добавления
@@ -35,7 +45,7 @@ export class BaseEntity extends MonoBehaviour {
 	}
 
 	onBeforeRemove() {
-
+		this.doReset();
 	}
 
 	setPosition(pos: Vector2 | Vector3) {
@@ -94,7 +104,7 @@ export class BaseEntity extends MonoBehaviour {
 	getRotationDeg() {
 		return this.rotation.z / Math.PI * 180;
 	}
-	
+
 
 	setScale(scale: number) {
 		this.scale.setScalar(scale);
@@ -103,8 +113,6 @@ export class BaseEntity extends MonoBehaviour {
 	setScaleXY(x: number, y: number) {
 		this.scale.set(x, y, this.scale.z);
 	}
-
-	
 
 	getRenderOrder() {
 		return this.renderIndex;
@@ -124,15 +132,30 @@ export class BaseEntity extends MonoBehaviour {
 		this.updateMatrixWorld();
 	}
 
-	addComponent(cmp: MonoBehaviour) {
+	addComponent(cmp: MonoBehaviour, name: string) {
+		if (name == '')
+			name = cmp.constructor.name;
+		if (this.components[name] !== undefined)
+			console.warn("Компонент с таким имененем существует:", name, cmp);
 		cmp.onAddedComponent(this);
-		this.components.push(cmp);
+		this.components[name] = cmp;
+	}
+
+	getComponent(name: string) {
+		return this.components[name];
+	}
+
+	private updateComponents(deltaTime: number) {
+		for (var name in this.components) {
+			var cmp = this.components[name];
+			cmp.doUpdate(deltaTime);
+		}
 	}
 
 	GetChildCount() {
 		return this.children.length;
 	}
-	
+
 	// получить дочерний элемент
 	GetChild(index: number) {
 		if (this.children.length == 0) {
@@ -148,7 +171,7 @@ export class BaseEntity extends MonoBehaviour {
 	}
 
 	doUpdate(deltaTime: number) {
-
+		this.updateComponents(deltaTime);
 	}
 
 	destroy() {

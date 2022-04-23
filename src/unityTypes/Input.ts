@@ -1,6 +1,6 @@
 import { EventBus } from "../systems/EventBus";
 import { Vector2 } from "three";
-import {Screen} from "./Screen";
+import { Screen } from "./Screen";
 
 export enum TouchPhase {
     Began = 0, // A finger touched the screen.
@@ -16,38 +16,40 @@ export interface TouchData {
     phase: TouchPhase;
 }
 
-export interface PointerEventData{
-    button:number;
-    position:Vector2;
+export interface PointerEventData {
+    button: number;
+    position: Vector2;
     pointerId: number;
 }
 
 export interface IPointerDownHandler {
-	OnPointerDown(pointerEventData: PointerEventData): void;
+    OnPointerDown(pointerEventData: PointerEventData): void;
 }
 export interface IPointerUpHandler {
-	OnPointerUp(pointerEventData: PointerEventData): void;
+    OnPointerUp(pointerEventData: PointerEventData): void;
 }
 
 export interface IDragHandler {
-	OnDrag(pointerEventData: PointerEventData): void;
+    OnDrag(pointerEventData: PointerEventData): void;
 }
 
-export interface KeyboardDown{
-    keyCode:number;
-    key:string;
+export interface KeyboardDown {
+    keyCode: number;
+    key: string;
 }
 
 export class Input {
     private _touches: { [key: string]: TouchData } = {};
-    private _mousePos:Vector2 = new Vector2();
+    private _mousePos: Vector2 = new Vector2();
     public static instance: Input;
 
     public constructor() {
         Input.instance = this;
         document.addEventListener('pointerdown', this.onPointerDown.bind(this), false);
-        document.addEventListener('pointermove', this.onPointerMove.bind(this), false);
         document.addEventListener('pointerup', this.onPointerUp.bind(this), false);
+        document.addEventListener('mousedown', this.onMouseDown.bind(this), false);
+        document.addEventListener('mouseup', this.onMouseUp.bind(this), false);
+        document.addEventListener('pointermove', this.onPointerMove.bind(this), false);
         document.addEventListener('pointercancel', this.onPointerCancel.bind(this), false);
         document.addEventListener('keydown', this.onKeyDown.bind(this), false);
         window.addEventListener('resize', this.onResize.bind(this), false);
@@ -62,9 +64,8 @@ export class Input {
         el.addEventListener('fullscreenchange', this.onFullsSreenChange.bind(this));
     }
 
-    private onKeyDown(e:KeyboardEvent)
-    {
-        EventBus.dispatchEvent<KeyboardDown>('onKeyboardDown', {key: e.key, keyCode:e.keyCode});
+    private onKeyDown(e: KeyboardEvent) {
+        EventBus.dispatchEvent<KeyboardDown>('onKeyboardDown', { key: e.key, keyCode: e.keyCode });
     }
 
     private onFullsSreenChange(event: Event) {
@@ -76,6 +77,8 @@ export class Input {
     }
 
     private onPointerDown(event: PointerEvent) {
+        if (!Input.isTouchMode())
+            return;
         this._touches[event.pointerId] = {
             pointerId: event.pointerId,
             phase: TouchPhase.Began,
@@ -83,6 +86,38 @@ export class Input {
         };
         this.setPointers(event.offsetX, event.offsetY);
         EventBus.dispatchEvent<PointerEventData>('onPointerDown', { button: event.button, position: this._mousePos.clone(), pointerId: event.pointerId });
+    }
+
+    private onPointerUp(event: PointerEvent) {
+        if (!Input.isTouchMode())
+            return;
+        this._touches[event.pointerId].phase = TouchPhase.Ended;
+        delete this._touches[event.pointerId];
+        this.setPointers(event.offsetX, event.offsetY);
+        EventBus.dispatchEvent<PointerEventData>('onPointerUp', { button: event.button, position: this._mousePos.clone(), pointerId: event.pointerId });
+    }
+
+    private onMouseDown(event: MouseEvent) {
+        if (Input.isTouchMode())
+            return;
+        this._touches[0] = {
+            pointerId: 0,
+            phase: TouchPhase.Began,
+            position: new Vector2(event.offsetX, event.offsetY)
+        };
+        this.setPointers(event.offsetX, event.offsetY);
+        EventBus.dispatchEvent<PointerEventData>('onPointerDown', { button: event.button, position: this._mousePos.clone(), pointerId: 0 });
+    }
+
+    private onMouseUp(event: MouseEvent) {
+        if (Input.isTouchMode())
+            return;
+        if (this._touches[0]) {
+            this._touches[0].phase = TouchPhase.Ended;
+            delete this._touches[0];
+        }
+        this.setPointers(event.offsetX, event.offsetY);
+        EventBus.dispatchEvent<PointerEventData>('onPointerUp', { button: event.button, position: this._mousePos.clone(), pointerId: 0 });
     }
 
     private onPointerMove(event: PointerEvent) {
@@ -98,13 +133,6 @@ export class Input {
         EventBus.dispatchEvent<PointerEventData>('onPointerMove', { button: event.button, position: this._mousePos.clone(), pointerId: event.pointerId });
     }
 
-    private onPointerUp(event: PointerEvent) {
-        this._touches[event.pointerId].phase = TouchPhase.Ended;
-        delete this._touches[event.pointerId];
-        this.setPointers(event.offsetX, event.offsetY);
-        EventBus.dispatchEvent<PointerEventData>('onPointerUp', { button: event.button, position: this._mousePos.clone(), pointerId: event.pointerId });
-    }
-
     private onPointerCancel(event: PointerEvent) {
         this._touches[event.pointerId].phase = TouchPhase.Canceled;
         this.setPointers(event.offsetX, event.offsetY);
@@ -112,17 +140,16 @@ export class Input {
         delete this._touches[event.pointerId];
     }
 
-    private setPointers(x = 0, y = 0)
-	{
+    private setPointers(x = 0, y = 0) {
         y = Screen.height - y;
-		this._mousePos.set(x, y);
-	}
+        this._mousePos.set(x, y);
+    }
 
     public static get touchCount(): number {
         return Object.keys(Input.instance._touches).length;
     }
 
-    public static get mousePosition():Vector2{
+    public static get mousePosition(): Vector2 {
         return Input.instance._mousePos;
     }
 
