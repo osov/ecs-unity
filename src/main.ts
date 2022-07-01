@@ -18,12 +18,12 @@ import { Time } from './unityTypes/Time';
 import { JsonUtility } from './unityTypes/JsonUtility';
 import { float } from './utils/extends';
 import { noCallable, noTranslit, noTranslitClass } from './utils/ConvertTypes';
-import { mtRandSeed, randomSeed } from './utils/utils';
+import { delay, mtRandSeed, randomSeed } from './utils/utils';
 import { ItemInfo, SpatialHashingInterest } from './utils/SpatialHashingInterest';
 
 export {
     float, GameObject, Time, Input, JsonUtility, Screen, ScreenOrientation, Random, SystemLanguage, Application, PlayerPrefs, MonoBehaviour,
     BaseEntity, BaseSystem, Resources, TextAsset, EventBus, Ads, JsonHelper, PointerEventData,
 
-    noTranslit, noCallable, noTranslitClass, randomSeed, mtRandSeed, SpatialHashingInterest, ItemInfo,
+    noTranslit, noCallable, noTranslitClass, randomSeed, mtRandSeed, SpatialHashingInterest, ItemInfo, delay,
 };

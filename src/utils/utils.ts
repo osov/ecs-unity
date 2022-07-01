@@ -40,3 +40,8 @@ export function mtRandSeed(min: number, max: number, seedFnc: () => number) {
 	var ra = seedFnc();
 	return Math.floor(ra * (max - min + 1)) + min;
 }
+
+
+export function delay(ms: number) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}

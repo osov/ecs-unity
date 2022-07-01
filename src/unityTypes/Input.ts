@@ -101,12 +101,12 @@ export class Input {
         if (Input.isTouchMode())
             return;
         this._touches[0] = {
-            pointerId: 0,
+            pointerId: 1,
             phase: TouchPhase.Began,
             position: new Vector2(event.offsetX, event.offsetY)
         };
         this.setPointers(event.offsetX, event.offsetY);
-        EventBus.dispatchEvent<PointerEventData>('onPointerDown', { button: event.button, position: this._mousePos.clone(), pointerId: 0 });
+        EventBus.dispatchEvent<PointerEventData>('onPointerDown', { button: event.button, position: this._mousePos.clone(), pointerId: 1 });
     }
 
     private onMouseUp(event: MouseEvent) {
@@ -117,7 +117,7 @@ export class Input {
             delete this._touches[0];
         }
         this.setPointers(event.offsetX, event.offsetY);
-        EventBus.dispatchEvent<PointerEventData>('onPointerUp', { button: event.button, position: this._mousePos.clone(), pointerId: 0 });
+        EventBus.dispatchEvent<PointerEventData>('onPointerUp', { button: event.button, position: this._mousePos.clone(), pointerId: 1 });
     }
 
     private onPointerMove(event: PointerEvent) {

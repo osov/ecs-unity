@@ -132,7 +132,7 @@ export class BaseEntity extends MonoBehaviour {
 		this.updateMatrixWorld();
 	}
 
-	addComponent(cmp: MonoBehaviour, name: string) {
+	addComponent(cmp: MonoBehaviour, name: string = '') {
 		if (name == '')
 			name = cmp.constructor.name;
 		if (this.components[name] !== undefined)
